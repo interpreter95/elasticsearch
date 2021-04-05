@@ -8,25 +8,21 @@
 
 package org.elasticsearch.painless;
 
+import java.net.MalformedURLException;
+
 public class UrlTests extends ScriptTestCase {
-    public void testConstructor() {
-        assertDoesNotThrow​(exec("new URL('http://www.test.com')"));
-
-        assertDoesNotThrow​(exec("new URL('ftp://www.test.eu')"));
-
-        assertDoesNotThrow​(exec("new URL('https://www.test.com:8080/path?query#fragment')"));
-
+    public void testInvalidURLs() {
         MalformedURLException e = expectScriptThrows(MalformedURLException.class, () -> exec("new URL('abc')"));
-        assertEquals("'abc' is not an IP string literal.", e.getMessage());
+        assertEquals("no protocol: abc", e.getMessage());
 
         e = expectScriptThrows(MalformedURLException.class, () -> exec("new URL('')"));
-        assertEquals("'abc' is not an IP string literal.", e.getMessage());
+        assertEquals("no protocol: ", e.getMessage());
 
         e = expectScriptThrows(MalformedURLException.class, () -> exec("new URL(null)"));
-        assertEquals("'abc' is not an IP string literal.", e.getMessage());
+        assertEquals("Cannot invoke \"String.length()\" because \"spec\" is null", e.getMessage());
 
         e = expectScriptThrows(MalformedURLException.class, () -> exec("new URL('abc://www.test.com')"));
-        assertEquals("'abc' is not an IP string literal.", e.getMessage());
+        assertEquals("unknown protocol: abc", e.getMessage());
     }
 
     public void testGetHost() {
@@ -36,9 +32,9 @@ public class UrlTests extends ScriptTestCase {
     }
 
     public void testGetPath() {
-        assertEquals("path", exec("URL url = new URL('https://www.test.com:8080/path?query#fragment'); url.getPath()"));
+        assertEquals("/path", exec("URL url = new URL('https://www.test.com:8080/path?query#fragment'); url.getPath()"));
 
-        assertEquals("docs/example", exec("URL url = new URL('https://www.test.com/docs/example'); url.getPath()"));
+        assertEquals("/docs/example", exec("URL url = new URL('https://www.test.com/docs/example'); url.getPath()"));
     }
 
     public void testGetPort() {
