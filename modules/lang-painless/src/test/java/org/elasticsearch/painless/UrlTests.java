@@ -49,8 +49,8 @@ public class UrlTests extends ScriptTestCase {
         assertEquals("ftp", exec("URL url = new URL('ftp://www.test.eu'); url.getProtocol()"));
     }
 
-    public void testGetFragment() {
-        assertEquals("fragment", exec("URL url = new URL('https://www.test.com:8080/path?query#fragment'); url.getRef()"));
+    public void testGetReference() {
+        assertEquals("reference", exec("URL url = new URL('https://www.test.com:8080/path?query#reference'); url.getRef()"));
 
         assertEquals("section1", exec("URL url = new URL('https://www.test.com#section1'); url.getRef()"));
     }
